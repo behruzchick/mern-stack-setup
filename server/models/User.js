@@ -16,8 +16,14 @@ const userSchema = mongoose.Schema({
         type:String,
         unique:true
     },
-    isLogged:false,
-    isAdmin:false,
+    isLogged:{
+        type:Boolean,
+        default:false
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
+    },
 
 })
 

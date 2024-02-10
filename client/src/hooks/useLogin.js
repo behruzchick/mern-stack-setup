@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useState } from 'react';
-
+import { API } from '../API';
 const useLogin = () => {
   const loginUser = async ({ email, password,setShowA,setShowB ,setErrData}) => {
-    const response = await axios.post("http://localhost:5000/auth/login",{
+    const response = await axios.post(`${API}/auth/login`,{
         email:email,
         password:password
     })

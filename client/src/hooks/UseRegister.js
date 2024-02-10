@@ -1,9 +1,9 @@
 import axios from 'axios';
 // import { useState } from 'react';
-
+import { API } from '../API';
 const useRegister = () => {
   const registerUser = async ({ email, password,confirmPassword,name,setShowB,setShowA,setErrData }) => {
-    axios.post("http://localhost:5000/auth/register",{
+    axios.post(`${API}/auth/register `,{
         name:name,
         email:email,
         password:password,
