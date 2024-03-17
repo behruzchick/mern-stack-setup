@@ -26,7 +26,7 @@ const emailArleadyUsed = (req,res) => {
 
 const nameArleadyUsed = (req,res) => {
     return res.status(403).json({
-        message: "Email arleady used!"
+        message: "Name arleady used!"
     })
 }
 

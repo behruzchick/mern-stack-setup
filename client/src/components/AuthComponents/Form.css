@@ -1,0 +1,16 @@
+.form-wrape{
+    padding: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.message{
+    position: absolute;
+    top: 100px;
+    right: 50px;
+}
+
+.closed{
+    display: none;
+}

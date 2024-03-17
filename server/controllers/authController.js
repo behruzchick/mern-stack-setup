@@ -13,61 +13,44 @@ const signUp = async (req, res) => {
 
         const doc = new userModel({
             name: req.body.name,
-            email: req.body.email,
+            surname: req.body.surname,
             passwordHash: hash
         })
 
         const isName = await userModel.findOne({name:req.body.name});
-        const isEmail = await userModel.findOne({email:req.body.email});
 
-        // if(isEmail){
-        //     return emailArleadyUsed(req,res)
+
+        // if(req.body.password !== req.body.confirmpassword){
+        //     return confirmpassword(req,res)
         // }
 
-        if(req.body.password !== req.body.confirmpassword){
-            return confirmpassword(req,res)
-        }
-
-        // if(isName){
-        //     return nameArleadyUsed(req,res)
-        // }
-
-        if(!req.body.password){
-            return enterPasswordError(req,res)
-        }
-
-        if (req.body.name.length <= 0) {
-            return enterNameError(req,res)
-        }
-        if (req.body.email.length <= 0) {
-            return  enterEmailError(req,res)
-        }
-        if (req.body.password.length <= 7) {
-            return passwordLengthError(req,res)
+        if(isName){
+            return nameArleadyUsed(req,res)
         }
 
 
         if(await req.body.name === "admin" && await req.body.email === "admin@gmail.com" && req.body.password === "admin123"){
             doc.isAdmin = true
         }
+        doc.isLogged = true
 
         const user = await doc.save();
 
-        const token = jwt.sign(
-            {
-                _id: user._id
-            },
-            'secret123',
-            {
-                expiresIn: '20d'
-            }
-        );
+        // const token = jwt.sign(
+        //     {
+        //         _id: user._id
+        //     },
+        //     'secret123',
+        //     {
+        //         expiresIn: '20d'
+        //     }
+        // );
         
         const { passwordHash, ...userData } = user._doc
 
         res.json({
             ...userData,
-            token
+            // token
         })
     } catch (error) {
         console.log(error);
@@ -79,7 +62,7 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
     try {
-        const user = await userModel.findOne({ email: req.body.email });
+        const user = await userModel.findOne({ name: req.body.name });
 
         if (!user) {
             return userNotFound404(req,res)
@@ -90,19 +73,20 @@ const signIn = async (req, res) => {
         if (!pass) {
             return wrongPassword(req,res)
         }
-        const token = jwt.sign(
-            {
-                _id: user._id
-            },
-            'secret123',
-            {
-                expiresIn: '30d'
-            }
-        );
+
+        user.isLogged = true
+        // const token = jwt.sign(
+        //     {
+        //         _id: user._id
+        //     },
+        //     'secret123',
+        //     {
+        //         expiresIn: '30d'
+        //     }
+        // );
         const { passwordHash, ...userData } = user._doc
         res.json({
             ...userData,
-            token
         })
     } catch (error) {
         console.log(error);
@@ -110,7 +94,62 @@ const signIn = async (req, res) => {
     }
 }
 
+const getUserData = async(req,res) => {
+    try {
+        const user = await userModel.findById(req.params.id).select('-avatar,-passwordHash');
+
+        if(!user){
+            return userNotFound404(req,res);
+        }
+
+        const {passwordHash,...userData} = user._doc
+
+        res.json(userData);
+    } catch (error) {
+        console.log(error);
+        return internalServerError(req,res);
+    }
+}
+
+const getUserAvatar = async(req,res) => {
+    try {
+        const fileId = req.params.id;
+        const file = await userModel.findById(fileId);
+  
+        if (!file) {
+            return res.status(404).json({ message: 'File not found' });
+        }
+  
+        res.setHeader('Content-Type', 'image/jpeg');
+        res.send(file.img.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving image' });
+    }
+}
+
+const logout = async(req,res) => {
+    try {
+        const user = await userModel.findOne({_id:req.param.id});
+
+        if(!user){
+            userNotFound404(req,res)
+        }
+
+        user.isLogged = false;
+
+        res.json({
+            message:"Logouted successfuly!"
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     signIn,
-    signUp
+    signUp,
+    getUserData,
+    getUserAvatar,
+    logout
 }

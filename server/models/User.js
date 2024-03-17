@@ -5,16 +5,15 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     name:{
         type:String,
-        unique:true
+        required:true
     },
-    email:{
+    surname:{
         type:String,
-        unique:true,
         required:true
     },
     passwordHash:{
         type:String,
-        unique:true
+        required:true
     },
     isLogged:{
         type:Boolean,
@@ -23,6 +22,10 @@ const userSchema = mongoose.Schema({
     isAdmin:{
         type:Boolean,
         default:false
+    },
+    avatar:{
+        type:String,
+        default:''
     },
 
 })

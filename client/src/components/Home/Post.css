@@ -1,0 +1,34 @@
+.post{
+    display: flex;
+    align-items: center;
+    /* height: 400px; */
+    justify-content: space-between;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+}
+
+.post:hover{
+    box-shadow: rgba(13, 12, 12, 0.35) 0px 2px 15px;
+    transition: 0.6s;
+}
+
+.post_text{
+    width: 700px;
+}
+.post-img{
+    border-radius: 10px;
+    height: 400px;
+    /* height: 400px; */
+}
+
+.all-posts{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.post-wrape{
+    padding: 10px;
+}
